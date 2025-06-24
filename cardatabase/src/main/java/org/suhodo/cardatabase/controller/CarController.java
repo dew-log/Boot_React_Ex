@@ -26,3 +26,21 @@ public class CarController {
         return carRepository.findAll();
     }
 }
+
+/*
+ * [Rest Controller 생성하는 법]
+ * 1. Class위에 @RestController을 붙인다.
+ *    그리고 원하는 주소에 매핑된 메서드를 생성한다.
+ * 
+ * 2. implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+ *    를 사용해서, 기존의 repository를 repository/controller의 2가지 용도로
+ *    즉시 사용하게 하는 방법이다.
+ *    spring.data.rest.basePath=/api
+ *    이 주소가 접근 경로이다.
+ * 
+ *    GET             : 읽기(Read)
+ *    POST            : 생성(Create)
+ *    PUT             : 업데이트(Update), 모든 필드를 전송
+ *    PATCH           : 업데이트(Update), 업데이트 할 필드만 전송
+ *    DELETE          : 삭제(Delete)
+ */
