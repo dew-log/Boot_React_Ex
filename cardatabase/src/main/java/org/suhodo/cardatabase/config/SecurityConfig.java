@@ -83,22 +83,39 @@ public class SecurityConfig {
      * 불필요해서 disable
      */
     /* /login 주소 요청은 허용한다. */
+    /*
+     * @Bean
+     * public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+     * 
+     * log.info("filterChain.................");
+     * 
+     * http.csrf((csrf) -> csrf.disable())
+     * .cors(withDefaults())
+     * .sessionManagement((sessionManagement) -> sessionManagement
+     * .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+     * .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
+     * .requestMatchers(HttpMethod.POST, "/login").permitAll()
+     * .anyRequest().authenticated())
+     * .addFilterBefore(authenticationFilter,
+     * UsernamePasswordAuthenticationFilter.class)
+     * .exceptionHandling((exceptionHandling) -> exceptionHandling
+     * .authenticationEntryPoint(authEntryPoint));
+     * 
+     * return http.build();
+     * }
+     */
+
+    // 임시로 React App이 자유롭게 요청하도록 설정을 변경한다.
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         log.info("filterChain.................");
 
-        http.csrf((csrf) -> csrf.disable())
-            .cors(withDefaults())
-                .sessionManagement((sessionManagement) -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                        .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                        .anyRequest().authenticated())
-                .addFilterBefore(authenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling((exceptionHandling) -> exceptionHandling
-                        .authenticationEntryPoint(authEntryPoint));
+        // 인증없이 모두 허용
+        http.csrf(csrf -> csrf.disable())
+                .cors(withDefaults())
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll());
 
         return http.build();
     }

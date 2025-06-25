@@ -33,13 +33,15 @@ public class CarController {
         return carRepository.findAll();
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    // ADMIN과 USER 모두 접근 가
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping("/car/{id}")
     public Car getCarById(@PathVariable("id") Long id) {
         Optional<Car> result = carRepository.findById(id);
         return result.orElse(null);
     }
     
+    // ADMIN만 가능
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/owner/{id}")
     public Owner getOwnerById(@PathVariable("id") Long id) {
