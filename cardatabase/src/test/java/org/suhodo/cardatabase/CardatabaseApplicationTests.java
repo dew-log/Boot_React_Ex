@@ -6,8 +6,11 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.suhodo.cardatabase.domain.AppUser;
 import org.suhodo.cardatabase.domain.Car;
 import org.suhodo.cardatabase.domain.Owner;
+import org.suhodo.cardatabase.repository.AppUserRepository;
 import org.suhodo.cardatabase.repository.CarRepository;
 import org.suhodo.cardatabase.repository.OwnerRepository;
 
@@ -23,6 +26,12 @@ class CardatabaseApplicationTests {
 
 	@Autowired
 	private OwnerRepository ownerRepository;
+
+	@Autowired
+	private AppUserRepository appUserRepository;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Test
 	public void TestCarRepository() {
@@ -85,7 +94,7 @@ class CardatabaseApplicationTests {
 		// 부모 엔티티를 먼저 저장해야 한다.
 		ownerRepository.saveAll(Arrays.asList(owner1, owner2));
 
-		/*자식 엔티티에 부모 엔티티를 연결시켜야한다. */
+		/* 자식 엔티티에 부모 엔티티를 연결시켜야한다. */
 
 		// 자식 엔티티
 		Car fordCar = Car.builder()
@@ -124,14 +133,32 @@ class CardatabaseApplicationTests {
 
 	@Transactional
 	@Test
-	public void TestSelectOwner(){
+	public void TestSelectOwner() {
 		List<Owner> ownerList = ownerRepository.findAll();
 		ownerList.stream().forEach(owner -> log.info(owner));
 	}
 
 	@Test
-	public void TestSelectCar(){
+	public void TestSelectCar() {
 		List<Car> carList = carRepository.findAll();
 		carList.stream().forEach(car -> log.info(car));
+	}
+
+	@Test
+	public void TestRegisterAppUser() {
+
+		AppUser appUser0 = AppUser.builder()
+				.username("user")
+				.password(passwordEncoder.encode("user"))
+				.role("USER")
+				.build();
+
+		AppUser appUser1 = AppUser.builder()
+				.username("admin")
+				.password(passwordEncoder.encode("admin"))
+				.role("ADMIN")
+				.build();
+
+		appUserRepository.saveAll(Arrays.asList(appUser0, appUser1));
 	}
 }
