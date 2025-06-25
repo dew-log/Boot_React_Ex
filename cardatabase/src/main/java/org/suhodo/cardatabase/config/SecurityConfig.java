@@ -3,12 +3,16 @@ package org.suhodo.cardatabase.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.suhodo.cardatabase.service.UserDetailsServiceImpl;
 
 import jakarta.annotation.PostConstruct;
@@ -26,7 +30,7 @@ import lombok.extern.log4j.Log4j2;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-   
+
     /* 아래 코드는 직접 인증에 필요한 AuthenticationManagerBuilder를 설정하는 역할이지만
      * 현재는 직접 등록하지 않아도 됨.
      */
@@ -51,5 +55,31 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    // LoginController에서 사용할 AuthenticationManager객체를 Bean으로 등록
+    @Bean
+    public AuthenticationManager authenticationManager(
+        AuthenticationConfiguration authConfig) throws Exception{
+        return authConfig.getAuthenticationManager();
+    }
+
+    // 스프링 시큐리티에서 어떤 경로는 보호/비보호 결정
+    // 보안 적용/비적용 결정
+    /* CSRF는 Session을 사용하는데, 우리는 Ajax json STATELESS 통신이므로, Session 관리가 없다.
+       불필요해서 disable */
+    // login 주소 요청은 허용한다.
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+        log.info("filterChain................");
+
+        http.csrf((csrf)->csrf.disable())
+            .sessionManagement((sessionManagement)->sessionManagement.
+                    sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests((authorizeHttpRequests)->authorizeHttpRequests
+                    .requestMatchers(HttpMethod.POST, "/login").permitAll().
+                    anyRequest().authenticated());
+
+        return http.build();
     }
 }
