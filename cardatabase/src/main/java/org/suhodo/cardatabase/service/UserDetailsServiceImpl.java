@@ -35,6 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService{
         UserBuilder builder = null;
         if(user.isPresent()){       // 일치하는 사용자 정보가 DB에 존재한다면
             AppUser currentUser = user.get();
+            log.info("loadUserByUsername : AppUser = " + currentUser);
             builder = User.withUsername(username);
             builder.password(currentUser.getPassword());
             builder.roles(currentUser.getRole());
