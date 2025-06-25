@@ -12,7 +12,9 @@ import org.suhodo.cardatabase.domain.AccountCredentials;
 import org.suhodo.cardatabase.service.JwtService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @RestController
 @RequiredArgsConstructor
 public class LoginController {
@@ -25,6 +27,9 @@ public class LoginController {
     // React앱에서 전송하는 json(username, password)데이터를 credentials에 저장
     @PostMapping("/login")
     public ResponseEntity<?> getToken(@RequestBody AccountCredentials credentials){
+
+        log.info("login : " + credentials + " ..............");
+
         UsernamePasswordAuthenticationToken creds = 
             new UsernamePasswordAuthenticationToken(credentials.username(), 
                                                     credentials.password());

@@ -1,11 +1,17 @@
 package org.suhodo.cardatabase.controller;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.suhodo.cardatabase.domain.Car;
+import org.suhodo.cardatabase.domain.Owner;
 import org.suhodo.cardatabase.repository.CarRepository;
+import org.suhodo.cardatabase.repository.OwnerRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,11 +25,26 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CarController {
 
+    private final OwnerRepository ownerRepository;
     private final CarRepository carRepository;
 
     @GetMapping("/cars")
     public List<Car> getCars(){
         return carRepository.findAll();
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/car/{id}")
+    public Car getCarById(@PathVariable("id") Long id) {
+        Optional<Car> result = carRepository.findById(id);
+        return result.orElse(null);
+    }
+    
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/owner/{id}")
+    public Owner getOwnerById(@PathVariable("id") Long id) {
+        Optional<Owner> result = ownerRepository.findById(id);
+        return result.orElse(null);
     }
 }
 
