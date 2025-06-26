@@ -10,7 +10,8 @@ import './App.css';
 // import MainApp from './ex08_FetchAdd/MainApp';
 // import MainApp from './ex09_EditCar/MainApp';
 // import MainApp from './ex10_ReNew_Mui/MainApp';
-import MainApp from './ex11_Login/MainApp';
+// import MainApp from './ex11_Login/MainApp';
+import MainApp from './ex12_SelectAuthUi/MainApp';
 
 function App() {
   return (
