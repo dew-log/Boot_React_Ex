@@ -64,6 +64,36 @@ class CardatabaseApplicationTests {
 				.price(7800)
 				.build();
 		carRepository.save(hyndaiCar);
+
+		Car volvoCar = Car.builder()
+				.brand("volvo")
+				.model("XC90")
+				.color("BlackSilver")
+				.registrationNumber("PV444")
+				.modelYear(2025)
+				.price(5400)
+				.build();
+		carRepository.save(volvoCar);
+
+		Car benzCar = Car.builder()
+				.brand("Benz")
+				.model("마이바흐 S클래스")
+				.color("Silver")
+				.registrationNumber("W31")
+				.modelYear(2025)
+				.price(6400)
+				.build();
+		carRepository.save(benzCar);
+
+		Car teslarCar = Car.builder()
+				.brand("테슬라")
+				.model("Model S")
+				.color("Black")
+				.registrationNumber("S-111")
+				.modelYear(2025)
+				.price(7800)
+				.build();
+		carRepository.save(teslarCar);
 	}
 
 	@Test
