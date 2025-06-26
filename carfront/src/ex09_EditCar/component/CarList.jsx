@@ -3,6 +3,8 @@ import { SERVER_URL } from "./constants";
 import { DataGrid } from "@mui/x-data-grid";
 import { Snackbar } from "@mui/material";
 import AddCar from "./AddCar";
+import { render } from "@testing-library/react";
+import EditCar from "./EditCar";
 
 const CarList = () => {
   const [cars, setCars] = useState([]); // car목록을 서버로부터 가져와서 저장
@@ -35,6 +37,12 @@ const CarList = () => {
     .catch((e)=>console.error(e));
   }
 
+  // car 자동차 객체
+  // link 전송할 주소
+  const fetchUpdateCar = (car, link) => {
+
+  }
+
   // 삭제 요청이 정상 처리되었다면, 서버로 다시 Car 리스트 요청
   const onDelClick = (url) => {
     if (window.confirm("Are you sure to delete?")) {
@@ -60,6 +68,13 @@ const CarList = () => {
     { field: "registrationNumber", headerName: "regNum", width: 200 },
     { field: "modelYear", headerName: "Year", width: 150 },
     { field: "price", headerName: "Price", width: 150 },
+    {
+      field: "_links.self.href",
+      headerName: "",
+      sortable: false,
+      filterable: false,
+      renderCell: (row)=><EditCar data={row} updateCar={fetchUpdateCar} />
+    },
     {
       field: "_links.self.href",
       headerName: "",
