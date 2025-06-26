@@ -84,49 +84,56 @@ public class SecurityConfig {
      * 불필요해서 disable
      */
     /* /login 주소 요청은 허용한다. */
-    /*
-     * @Bean
-     * public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-     * 
-     * log.info("filterChain.................");
-     * 
-     * http.csrf((csrf) -> csrf.disable())
-     * .cors(withDefaults())
-     * .sessionManagement((sessionManagement) -> sessionManagement
-     * .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-     * .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-     * .requestMatchers(HttpMethod.POST, "/login").permitAll()
-     * .anyRequest().authenticated())
-     * .addFilterBefore(authenticationFilter,
-     * UsernamePasswordAuthenticationFilter.class)
-     * .exceptionHandling((exceptionHandling) -> exceptionHandling
-     * .authenticationEntryPoint(authEntryPoint));
-     * 
-     * return http.build();
-     * }
-     */
-
-    // 임시로 React App이 자유롭게 요청하도록 설정을 변경한다.
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         log.info("filterChain.................");
 
-        // 인증없이 모두 허용
-        http.csrf(csrf -> csrf.disable())
+        http.csrf((csrf) -> csrf.disable())
+                .cors(withDefaults())
+                // .cors(withDefaults())
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:3000")); // 리액트 앱 주소
+                    config.setAllowedOrigins(List.of("http://localhost:3000")); // 이 주소의 클라이언트 허용
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
                     config.setAllowCredentials(true);
                     return config;
                 }))
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll());
+                .sessionManagement((sessionManagement) -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
+                        .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(authenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling((exceptionHandling) -> exceptionHandling
+                        .authenticationEntryPoint(authEntryPoint));
 
         return http.build();
     }
+
+    // 임시로 React App이 자유롭게 요청하도록 설정을 변경한다.
+    // @Bean
+    // public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+    // log.info("filterChain.................");
+
+    // // 인증없이 모두 허용
+    // http.csrf(csrf -> csrf.disable())
+    // .cors(cors -> cors.configurationSource(request -> {
+    // CorsConfiguration config = new CorsConfiguration();
+    // config.setAllowedOrigins(List.of("http://localhost:3000")); // 리액트 앱 주소
+    // config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    // config.setAllowedHeaders(List.of("*"));
+    // config.setAllowCredentials(true);
+    // return config;
+    // }))
+    // .authorizeHttpRequests(auth -> auth
+    // .anyRequest().permitAll());
+
+    // return http.build();
+    // }
 
     /*
      * CORS(Cross-Origin Resource Sharing, 교차 출처 리소스 공유)는
@@ -151,7 +158,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(Arrays.asList("*"));
         config.setAllowedMethods(Arrays.asList("*"));
         config.setAllowedHeaders(Arrays.asList("*"));
-        config.setAllowCredentials(false);
+        config.setAllowCredentials(true);
         config.applyPermitDefaultValues();
 
         source.registerCorsConfiguration("/**", config);
