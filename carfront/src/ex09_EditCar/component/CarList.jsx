@@ -69,7 +69,7 @@ const CarList = () => {
     { field: "modelYear", headerName: "Year", width: 150 },
     { field: "price", headerName: "Price", width: 150 },
     {
-      field: "_links.self.href",
+      field: "_links.car.href",
       headerName: "",
       sortable: false,
       filterable: false,
